@@ -10,6 +10,7 @@ namespace Birdi.TaskManagement.Data.DI
         public static IServiceCollection ResolveDataDependency(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITaskRepository, TaskRepository>();
             return services;
         }
     }

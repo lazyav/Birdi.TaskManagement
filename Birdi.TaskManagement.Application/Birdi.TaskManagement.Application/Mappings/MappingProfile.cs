@@ -8,7 +8,13 @@ namespace Birdi.TaskManagement.Application.Mappings
     {
         public MappingProfile()
         {
+            CreateMap<User, UserDto>();
             CreateMap<AddUser, User>();
+            CreateMap<AddTask, UserTask>();
+            CreateMap<EditTask, UserTask>();
+
+            CreateMap<UserTask, TaskDto>();
+            CreateMap<TaskDto, UserTask>();
             CreateMap<User, UserDto>();
         }
     }
