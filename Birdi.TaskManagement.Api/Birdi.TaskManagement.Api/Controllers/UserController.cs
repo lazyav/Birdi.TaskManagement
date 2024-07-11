@@ -21,9 +21,30 @@ namespace Birdi.TaskManagement.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Register([FromBody] AddUser addUser)
         {
-            await _userService.Register(addUser);
-            ResponseObject responseObject = ResponseObject.Create(System.Net.HttpStatusCode.Created);
+            ResponseObject responseObject = null;
+            //check if user already exists;
+            UserDto userDto = await _userService.Get(addUser.UserName);
+            if (userDto == null)
+            {
+                responseObject = ResponseObject.Create(System.Net.HttpStatusCode.OK);
+                await _userService.Register(addUser);
+            }
+            else
+            {
+                responseObject = ResponseObject.Create(System.Net.HttpStatusCode.OK, _isSuccess: false, _error: "User already exists");
+            }
             return CreatedAtAction(nameof(Register), responseObject);
+        }
+
+
+        [HttpPost]
+        [Route("login")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Login([FromBody] LoginUser loginUser)
+        {
+            ResponseObject responseObject = await _userService.AuthenticateUser(loginUser);
+            return Ok(responseObject);
         }
     }
 }

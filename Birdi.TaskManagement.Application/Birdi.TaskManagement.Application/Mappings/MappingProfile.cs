@@ -9,7 +9,7 @@ namespace Birdi.TaskManagement.Application.Mappings
         public MappingProfile()
         {
             CreateMap<AddUser, User>();
+            CreateMap<User, UserDto>();
         }
-
     }
 }

@@ -10,7 +10,7 @@ namespace Birdi.TaskManagement.Application.DI
         public static IServiceCollection ResolveApplicationDependency(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IUserService, UserService>();
-            // services.AddScoped<IMappingProfile, MappingProfile>();
+            services.AddScoped<IAuthService, AuthService>();
             return services;
         }
     }
