@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace Birdi.TaskManagement.Application.Services
 {
@@ -18,18 +19,18 @@ namespace Birdi.TaskManagement.Application.Services
         {
             try
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim("userId", userId.ToString()),
-                    }),
-                    Expires = DateTime.Now.AddMinutes(_jwtSettings.TokenValidityInMinutes),
-                    SigningCredentials = new SigningCredentials(_jwtSettings.IssuerSigningKey, SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                return tokenHandler.WriteToken(token);
+                var claims = new[] { new Claim("id", userId.ToString()) };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.KEY));
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                   _jwtSettings.Issuer,
+                   _jwtSettings.Audience,
+                    claims,
+                    expires: DateTime.UtcNow.AddDays(7),
+                    signingCredentials: signIn);
+
+                return new JwtSecurityTokenHandler().WriteToken(token);
             }
             catch (Exception ex)
             {
@@ -45,11 +46,6 @@ namespace Birdi.TaskManagement.Application.Services
             {
                 var tokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = _jwtSettings.ValidateIssuer,
-                    ValidateAudience = _jwtSettings.ValidateAudience,
-                    ValidateLifetime = _jwtSettings.ValidateLifetime,
-                    ValidateIssuerSigningKey = _jwtSettings.ValidateIssuerSigningKey,
-                    IssuerSigningKey = _jwtSettings.IssuerSigningKey,
                     ClockSkew = TimeSpan.Zero
                 };
 

@@ -1,10 +1,12 @@
 ﻿using Birdi.TaskManagement.Application.Contract;
 using Birdi.TaskManagement.Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
 namespace Birdi.TaskManagement.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TaskController : ControllerBase
@@ -39,28 +41,28 @@ namespace Birdi.TaskManagement.Api.Controllers
         [Route("delete")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ResponseObject> Delete(Guid taskId)
+        public async Task<ResponseObject> Delete([FromBody] string taskId)
         {
-            await _taskService.Delete(taskId);
+            await _taskService.Delete(new Guid(taskId));
             return ResponseObject.Create(System.Net.HttpStatusCode.OK);
         }
 
         [HttpGet]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ResponseObject> Get(Guid taskId)
+        public async Task<ResponseObject> Get([FromBody] string taskId)
         {
-            var task = await _taskService.Task(taskId);
+            var task = await _taskService.Task(new Guid(taskId));
             return ResponseObject.Create(System.Net.HttpStatusCode.OK, _data: task);
         }
 
-        [HttpGet]
-        [Route("all")]
+        [HttpGet("all/{id}")]
+        //[Route("all")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ResponseObject> GetAll(Guid userId)
+        public async Task<ResponseObject> GetAll(string id)
         {
-            var tasks = await _taskService.Tasks(userId);
+            var tasks = await _taskService.Tasks(new Guid(id));
             return ResponseObject.Create(System.Net.HttpStatusCode.OK, _data: tasks);
         }
     }
