@@ -6,4 +6,4 @@
 
 4. Build the project. We should be good to go.
 
-5. As authentication is not integrated with Sawgger. The API testing can be done either removing [Authorize] attribute or using PostMan.
+5. As authentication is not integrated with Swagger. The API testing can be done either removing [Authorize] attribute in the controller or using PostMan.
