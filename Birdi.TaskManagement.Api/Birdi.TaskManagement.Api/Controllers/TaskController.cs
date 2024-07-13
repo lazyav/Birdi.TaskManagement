@@ -12,18 +12,22 @@ namespace Birdi.TaskManagement.Api.Controllers
     public class TaskController : ControllerBase
     {
         public readonly ITaskService _taskService;
-        public TaskController(ITaskService taskService)
+        public readonly IUserService _userService;
+        public readonly HttpContext _context;
+        public TaskController(ITaskService taskService, IUserService userService)
         {
             _taskService = taskService;
+            _userService = userService;
+            _context = HttpContext;
         }
 
         [HttpPost]
-        [Route("add")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ResponseObject> Add([FromBody] AddTask task)
         {
-            await _taskService.Add(task);
+            Guid userId = _userService.GetUserId(HttpContext.User);
+            await _taskService.Add(task, userId);
             return ResponseObject.Create(System.Net.HttpStatusCode.Created);
         }
 
@@ -37,32 +41,41 @@ namespace Birdi.TaskManagement.Api.Controllers
             return ResponseObject.Create(System.Net.HttpStatusCode.OK);
         }
 
-        [HttpDelete]
-        [Route("delete")]
+        [HttpDelete("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ResponseObject> Delete([FromBody] string taskId)
+        public async Task<ResponseObject> Delete(string id)
         {
-            await _taskService.Delete(new Guid(taskId));
+            await _taskService.Delete(new Guid(id));
             return ResponseObject.Create(System.Net.HttpStatusCode.OK);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ResponseObject> Get([FromBody] string taskId)
+        public async Task<ResponseObject> Get(string id)
         {
-            var task = await _taskService.Task(new Guid(taskId));
+            var task = await _taskService.Task(new Guid(id));
             return ResponseObject.Create(System.Net.HttpStatusCode.OK, _data: task);
         }
 
-        [HttpGet("all/{id}")]
-        //[Route("all")]
+
+        [HttpGet("taskstatuses")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ResponseObject> GetAll(string id)
+        public async Task<ResponseObject> Get()
         {
-            var tasks = await _taskService.Tasks(new Guid(id));
+            var statues = await _taskService.GetTaskStatuses();
+            return ResponseObject.Create(System.Net.HttpStatusCode.OK, _data: statues);
+        }
+
+        [HttpGet("all")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ResponseObject> GetAll()
+        {
+            Guid userId = _userService.GetUserId(HttpContext.User);
+            var tasks = await _taskService.Tasks(userId);
             return ResponseObject.Create(System.Net.HttpStatusCode.OK, _data: tasks);
         }
     }

@@ -12,7 +12,7 @@ namespace Birdi.TaskManagement.Application.Mappings
             CreateMap<AddUser, User>();
             CreateMap<AddTask, UserTask>();
             CreateMap<EditTask, UserTask>();
-
+            CreateMap<Core.Entity.TaskStatus, TaskStatusDto>();
             CreateMap<UserTask, TaskDto>();
             CreateMap<TaskDto, UserTask>();
             CreateMap<User, UserDto>();

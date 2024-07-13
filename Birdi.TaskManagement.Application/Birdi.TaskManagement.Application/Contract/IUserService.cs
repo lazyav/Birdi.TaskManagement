@@ -1,4 +1,5 @@
 ﻿using Birdi.TaskManagement.Application.Models;
+using System.Security.Claims;
 
 namespace Birdi.TaskManagement.Application.Contract
 {
@@ -9,5 +10,7 @@ namespace Birdi.TaskManagement.Application.Contract
         Task<UserDto> Get(string userName);
 
         Task<ResponseObject> AuthenticateUser(LoginUser loginUser);
+
+        Guid GetUserId(ClaimsPrincipal user);
     }
 }

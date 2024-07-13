@@ -4,6 +4,7 @@ using Birdi.TaskManagement.Application.Models;
 using Birdi.TaskManagement.Core.Entity;
 using Birdi.TaskManagement.Core.Util;
 using Birdi.TaskManagement.Data.Contract;
+using System.Security.Claims;
 
 namespace Birdi.TaskManagement.Application.Services
 {
@@ -55,6 +56,12 @@ namespace Birdi.TaskManagement.Application.Services
             }
 
             return responseObject;
+        }
+
+        public Guid GetUserId(ClaimsPrincipal user)
+        {
+            string userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return new Guid(userId);
         }
     }
 }

@@ -15,9 +15,10 @@ namespace Birdi.TaskManagement.Application.Services
             _taskRepository = taskRepository;
             _mapping = mapping;
         }
-        public async Task Add(AddTask task)
+        public async Task Add(AddTask task, Guid userId)
         {
             UserTask userTask = _mapping.Map<UserTask>(task);
+            userTask.UserId = userId;
             userTask.Id = Guid.NewGuid();
             await _taskRepository.Add(userTask);
         }
@@ -32,6 +33,13 @@ namespace Birdi.TaskManagement.Application.Services
             UserTask userTask = _mapping.Map<UserTask>(task);
             userTask.UserId = new Guid("9F5205DB-D501-4EE2-8DD0-D02E2A2329FA");
             await _taskRepository.Edit(userTask);
+        }
+
+        public async Task<IEnumerable<TaskStatusDto>> GetTaskStatuses()
+        {
+            var statuses = await _taskRepository.GetTaskStatuses();
+            IEnumerable<TaskStatusDto> taskStatuses = _mapping.Map<IEnumerable<TaskStatusDto>>(statuses);
+            return taskStatuses;
         }
 
         public async Task<TaskDto> Task(Guid id)

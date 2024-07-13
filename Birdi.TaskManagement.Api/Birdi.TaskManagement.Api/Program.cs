@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(IMappingProfile));
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(AppSettings.DbName));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.Section));
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -48,12 +48,12 @@ app.UseCors(builder =>
         .AllowAnyMethod()
         .AllowAnyHeader());
 
-//app.UseSwagger();
-//app.UseSwaggerUI(options =>
-//{
-//    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-//    options.RoutePrefix = string.Empty;
-//});
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    options.RoutePrefix = string.Empty;
+});
 
 app.UseAuthentication();
 

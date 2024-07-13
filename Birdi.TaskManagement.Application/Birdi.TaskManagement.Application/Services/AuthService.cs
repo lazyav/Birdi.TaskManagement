@@ -19,7 +19,7 @@ namespace Birdi.TaskManagement.Application.Services
         {
             try
             {
-                var claims = new[] { new Claim("id", userId.ToString()) };
+                var claims = new[] { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.KEY));
                 var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

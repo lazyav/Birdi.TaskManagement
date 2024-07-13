@@ -7,7 +7,8 @@ namespace Birdi.TaskManagement.Application.Contract
         Task Delete(Guid id);
         Task<IEnumerable<TaskDto>> Tasks(Guid userId);
         Task<TaskDto> Task(Guid id);
-        Task Add(AddTask task);
+        Task Add(AddTask task, Guid userId);
         Task Edit(EditTask task);
+        Task<IEnumerable<TaskStatusDto>> GetTaskStatuses();
     }
 }

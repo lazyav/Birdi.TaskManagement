@@ -9,5 +9,6 @@ namespace Birdi.TaskManagement.Data.Contract
         Task<UserTask> Task(Guid id);
         Task Add(UserTask task);
         Task Edit(UserTask task);
+        Task<IEnumerable<Core.Entity.TaskStatus>> GetTaskStatuses();
     }
 }

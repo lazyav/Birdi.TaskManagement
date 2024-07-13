@@ -23,7 +23,7 @@ namespace Birdi.TaskManagement.Data.Repository
         {
             try
             {
-                var parameters = new { Id = task.Id, Title = task.Title, Description = task.Description, Duedate = task.Duedate, UserId = task.UserId };
+                var parameters = new { Id = task.Id, Title = task.Title, Description = task.Description, statusId = task.Status, Duedate = task.Duedate, UserId = task.UserId };
                 using (var connection = new SqlConnection(_appSettings.ConnectionString))
                 {
                     await connection.ExecuteAsync("[dbo].sp_AddTask", parameters, commandType: CommandType.StoredProcedure);
@@ -93,6 +93,19 @@ namespace Birdi.TaskManagement.Data.Repository
                 }
             }
             catch (Exception ex) { throw ex; }
+        }
+
+        public async Task<IEnumerable<Core.Entity.TaskStatus>> GetTaskStatuses()
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_appSettings.ConnectionString))
+                {
+                    return await connection.QueryAsync<Core.Entity.TaskStatus>("[dbo].sp_GetTaskStatus", commandType: CommandType.StoredProcedure);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+
         }
     }
 }
